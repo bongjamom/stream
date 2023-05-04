@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // XML, JSON, CSV
+
+    let arr = [
+      {
+        사용일자:'20230301',
+        노선명:'수인선',
+        역명:'달월',
+        승차총승객수:62,
+        하차총승객수:61,
+        등록일자:'20230304'
+      }, 
+      {}
+    ]
+
+    console.log(arr)
+    $.ajax({
+      url : 'CARD_SUBWAY_MONTH_202303.csv',
+      success : function(data) {
+        console.log(data)
+        console.log(data.length)
+        console.log(data.indexOf("\n"))
+        let array = data.split("\n");
+        let resultArray = [];
+        console.log(array);
+        for(let i in array) {
+          if(array[i].length == 0) {
+            continue;
+          }
+          if(i != 0) {
+            // 튜플
+            let columnArray = array[0].split(",")
+            let valueArray = array[i].split(",");
+            let obj = {};
+            for(let j in columnArray) {
+              obj[columnArray[j].replaceAll("\"", "")] = valueArray[j].replaceAll("\"", "");
+            }
+            resultArray.push(obj);
+          }
+        }
+        // console.log(resultArray);
+
+        // filter, map
+
+        // filter 2호선 // map 승차총승객, 하차총승객 >> XXX + 명
+        // resultArray
+        resultArray = resultArray
+        .filter(obj => obj.노선명 === '2호선')
+        .filter(obj => obj.사용일자 === '20230301')
+        .map(obj => {
+          obj.승차총승객수 += "명"
+          obj.하차총승객수 += "명"
+          return obj;
+        });
+        
+        console.log(resultArray)
+
+      }
+    })
+  </script>  
+</head>
+<body>
+  
+</body>
+</html>
